@@ -64,10 +64,3 @@ oauth-lib = { git = "https://github.com/pimalaya/core" }
 process-lib = { git = "https://github.com/pimalaya/core" }
 secret-lib = { git = "https://github.com/pimalaya/core" }
 pimalaya-tui = { git = "https://github.com/pimalaya/tui" }
-
-# email-lib = { path = "/home/soywod/code/pimalaya/core/email" }
-# secret-lib = { path = "/home/soywod/code/pimalaya/core/secret" }
-# process-lib = { path = "/home/soywod/code/pimalaya/core/process" }
-# mml-lib = { path = "/home/soywod/code/pimalaya/core/mml" }
-# oauth-lib = { path = "/home/soywod/code/pimalaya/core/oauth" }
-# keyring-lib = { path = "/home/soywod/code/pimalaya/core/keyring" }
