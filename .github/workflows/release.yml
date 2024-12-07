@@ -6,36 +6,22 @@ on:
       project:
         required: true
         type: string
+      os:
+        required: true
+        type: string
+      target:
+        required: true
+        type: string
+      share:
+        default: false
+        type: boolean
     secrets:
       CACHIX_AUTH_TOKEN:
         required: true
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: aarch64-darwin
-            os: macos-14
-          - target: aarch64-linux
-            os: ubuntu-latest
-          - target: armv6l-linux
-            os: ubuntu-latest
-          - target: armv7l-linux
-            os: ubuntu-latest
-          - target: i686-linux
-            os: ubuntu-latest
-          # FIXME
-          # - target: i686-windows
-          #   os: ubuntu-latest
-          - target: x86_64-darwin
-            os: macos-13
-          - target: x86_64-linux
-            os: ubuntu-latest
-          - target: x86_64-windows
-            os: ubuntu-latest
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -54,52 +40,28 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
       - name: Build release
-        run: nix build .#cross-${{ matrix.target }}
-      - name: Upload release
+        run: nix build .#cross-${{ inputs.target }}
+      - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.project }}-${{ matrix.target }}
+          name: ${{ inputs.project }}-${{ inputs.target }}
           path: result/bin/${{ inputs.project }}*
-      - name: Upload share folder
+      - name: Upload share artifact
         uses: actions/upload-artifact@v4
-        if: ${{ matrix.target == 'x86_64-linux' }}
+        if: inputs.share
         with:
           name: share
-          path: result/share
-      - name: Upload CHANGELOG.md
-        uses: actions/upload-artifact@v4
-        if: ${{ matrix.target == 'x86_64-linux' }}
-        with:
-          name: CHANGELOG.md
-          path: CHANGELOG.md
-
-  release:
-    runs-on: ubuntu-latest
-    # if: startsWith(github.ref, 'refs/tags/')
-    needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: aarch64-darwin
-          - target: aarch64-linux
-          - target: armv6l-linux
-          - target: armv7l-linux
-          - target: i686-linux
-          # FIXME
-          # - target: i686-windows
-          - target: x86_64-darwin
-          - target: x86_64-linux
-          - target: x86_64-windows
-    steps:
-      - name: Download artifacts
+          path: result/share          
+      - name: Download share artifact
         uses: actions/download-artifact@v4
-      - name: List
-        run: ls -al
-      - name: Upload releases
-        uses: softprops/action-gh-release@v2
+        if: !inputs.share
         with:
-          body_path: CHANGELOG.md
-          files:
-            ${{ inputs.project }}-${{ matrix.target }}/${{ inputs.project }}*
+          name: share
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        # if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            result/bin/${{ inputs.project }}*
+            result/share
             share

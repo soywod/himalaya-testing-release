@@ -1,4 +1,4 @@
-name: Release
+name: Releases
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - v*
 jobs:
   release:
-    uses: ./.github/workflows/release.yml
+    uses: ./.github/workflows/releases.yml
     secrets: inherit
     with:
       project: himalaya
