@@ -68,7 +68,7 @@ jobs:
           path: result/share
 
   release:
-    needs: build-release
+    needs: build
     steps:
       - name: Download binaries
         uses: actions/download-artifact@v4
