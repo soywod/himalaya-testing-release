@@ -5,7 +5,7 @@ on:
 
 jobs:
   release:
-    uses: ./release.yml
+    uses: ./release.yml@master
     secrets: inherit
     with:
       project: himalaya
