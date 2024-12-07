@@ -11,42 +11,40 @@ on:
         required: true
 
 jobs:
+  build-with-share:
+    uses: ./.github/workflows/release.yml
+    secrets: inherit
+    with:
+      project: ${{ inputs.project }}
+      os: ubuntu-latest
+      target: x86_64-linux
+      share: true
   build:
     uses: ./.github/workflows/release.yml
+    needs: build-with-share
     secrets: inherit
     with:
       project: ${{ inputs.project }}
       os: ${{ matrix.os }}
       target: ${{ matrix.target }}
-      share: ${{ matrix.share }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - target: aarch64-darwin
             os: macos-14
-            share: false
           - target: aarch64-linux
             os: ubuntu-latest
-            share: false
           - target: armv6l-linux
             os: ubuntu-latest
-            share: false
           - target: armv7l-linux
             os: ubuntu-latest
-            share: false
           - target: i686-linux
             os: ubuntu-latest
-            share: false
           # FIXME
           # - target: i686-windows
           #   os: ubuntu-latest
-          # share: false
           - target: x86_64-darwin
             os: macos-13
-          - target: x86_64-linux
-            os: ubuntu-latest
-            share: true
           - target: x86_64-windows
             os: ubuntu-latest
-            share: false
