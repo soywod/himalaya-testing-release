@@ -54,20 +54,23 @@ jobs:
           path: result/share          
       - name: Rename windows release
         # if: startsWith(github.ref, 'refs/tags/') && endsWith('windows', inputs.target)
-        if: ${{ endsWith('windows', inputs.target) }}
+        if: ${{ endsWith(inputs.target, 'windows') }}
         run: cp result/bin/${{ inputs.project }}.exe ${{ inputs.project }}-${{ inputs.target }}.exe
       - name: Rename non-windows release
         # if: startsWith(github.ref, 'refs/tags/') && !endsWith('windows', inputs.target)
-        if: ${{ !endsWith('windows', inputs.target) }}
+        if: ${{ !endsWith(inputs.target, 'windows') }}
         run: cp result/bin/${{ inputs.project }} ${{ inputs.project }}-${{ inputs.target }}
       - name: Upload release
         uses: softprops/action-gh-release@v2
         # if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ${{ inputs.project }}*
+      - name: Compress share folder
+        # if: inputs.share && startsWith(github.ref, 'refs/tags/')
+        run: tar cvzf share.tgz -C result share
       - name: Upload share
         uses: softprops/action-gh-release@v2
         # if: inputs.share && startsWith(github.ref, 'refs/tags/')
         if: inputs.share
         with:
-          files: result/share
+          files: share.tgz
