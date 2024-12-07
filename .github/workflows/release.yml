@@ -66,6 +66,12 @@ jobs:
         with:
           name: share
           path: result/share
+      - name: Upload CHANGELOG.md
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.target == 'x86_64-linux' }}
+        with:
+          name: CHANGELOG.md
+          path: CHANGELOG.md
 
   release:
     runs-on: ubuntu-latest
@@ -93,10 +99,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: share
+      - name: Download CHANGELOG.md
+        uses: actions/download-artifact@v4
+        with:
+          name: CHANGELOG.md
       - name: Upload releases
         uses: softprops/action-gh-release@v2
         # if: startsWith(github.ref, 'refs/tags/')
         with:
+          body_path: CHANGELOG.md
           files:
             ${{ inputs.project }}-${{ matrix.target }}
             share
