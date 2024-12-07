@@ -1,0 +1,11 @@
+name: Release
+
+on:
+  push:
+
+jobs:
+  release:
+    uses: ./release.yml
+    secrets: inherit
+    with:
+      project: himalaya
