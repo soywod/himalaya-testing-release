@@ -60,6 +60,7 @@ jobs:
         if: ${{ !inputs.share }}
         with:
           name: share
+          path: .
       - name: Copy binary
         run: cp result/bin/${{ inputs.project }}* .          
       - name: Compress release
