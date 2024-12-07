@@ -40,14 +40,12 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           extraPullNames: nix-community
       - name: Build release
-        run: |
-          nix build .#cross-${{ inputs.target }}
-          cp result/bin/${{ inputs.project }}* .
+        run: nix build .#cross-${{ inputs.target }}
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.project }}-${{ inputs.target }}
-          path: ${{ inputs.project }}*
+          path: result/bin/${{ inputs.project }}*
       - name: Move share artifact
         if: ${{ inputs.share }}
         run: cp -r result/share .
@@ -62,6 +60,8 @@ jobs:
         if: ${{ !inputs.share }}
         with:
           name: share
+      - name: Copy binary
+        run: cp result/bin/${{ inputs.project }}* .          
       - name: Compress release
         run: |
           tar cvzf ${{ inputs.project }}.${{ inputs.target }}.tgz ${{ inputs.project }}* share
