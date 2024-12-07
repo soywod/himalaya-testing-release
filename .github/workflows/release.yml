@@ -48,13 +48,13 @@ jobs:
           path: result/bin/${{ inputs.project }}*
       - name: Upload share artifact
         uses: actions/upload-artifact@v4
-        if: inputs.share
+        if: ${{ inputs.share == true }}
         with:
           name: share
           path: result/share          
       - name: Download share artifact
         uses: actions/download-artifact@v4
-        if: !inputs.share
+        if: ${{ inputs.share == false }}
         with:
           name: share
       - name: Upload release
