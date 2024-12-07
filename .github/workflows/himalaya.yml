@@ -6,7 +6,7 @@ on:
       - v*
 jobs:
   release:
-    uses: pimalaya/nix/workflows/releases.yml@master
+    uses: pimalaya/nix/.github/workflows/releases.yml@master
     secrets: inherit
     with:
       project: himalaya
