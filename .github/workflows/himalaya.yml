@@ -2,7 +2,8 @@ name: Release
 
 on:
   push:
-
+    tags:
+      - v*
 jobs:
   release:
     uses: ./.github/workflows/release.yml
