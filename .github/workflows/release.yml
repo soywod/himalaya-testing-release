@@ -46,30 +46,31 @@ jobs:
         with:
           name: ${{ inputs.project }}-${{ inputs.target }}
           path: result/bin/${{ inputs.project }}*
-      - name: Move share artifact
-        if: ${{ inputs.share }}
-        run: cp -r result/share .
       - name: Upload share artifact
         uses: actions/upload-artifact@v4
         if: ${{ inputs.share }}
         with:
           name: share
           path: result/share
+      - name: Move binary
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
+        run: cp result/bin/${{ inputs.project }}* .
+      - name: Move share folders
+        if: ${{ inputs.share && startsWith(github.ref, 'refs/tags/') }}
+        run: cp result/share . -R
       - name: Download share artifact
         uses: actions/download-artifact@v4
-        if: ${{ !inputs.share }}
+        if: ${{ !inputs.share && startsWith(github.ref, 'refs/tags/') }}
         with:
           name: share
           path: ./share
-      - name: Copy binary
-        run: cp result/bin/${{ inputs.project }}* .          
       - name: Compress release
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         run: |
-          ls -al
           tar cvzf ${{ inputs.project }}.${{ inputs.target }}.tgz ${{ inputs.project }}* share
           zip -r ${{ inputs.project }}.${{ inputs.target }}.zip ${{ inputs.project }}* share
       - name: Upload release
         uses: softprops/action-gh-release@v2
-        # if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ startsWith(github.ref, 'refs/tags/') }}
         with:
-          files: ${{ inputs.project }}*
+          files: ${{ inputs.project }}.${{ inputs.target }}.*
