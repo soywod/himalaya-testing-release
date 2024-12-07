@@ -48,20 +48,26 @@ jobs:
           path: result/bin/${{ inputs.project }}*
       - name: Upload share artifact
         uses: actions/upload-artifact@v4
-        if: ${{ inputs.share == true }}
+        if: inputs.share
         with:
           name: share
           path: result/share          
-      - name: Download share artifact
-        uses: actions/download-artifact@v4
-        if: ${{ inputs.share == false }}
-        with:
-          name: share
+      - name: Move release
+        # if: startsWith(github.ref, 'refs/tags/') && endsWith('windows', inputs.target)
+        if: endsWith('windows', inputs.target)
+        run: mv result/bin/${{ inputs.project }}.exe ${{ inputs.project }}-${{ inputs.target }}.exe
+      - name: Move release
+        # if: startsWith(github.ref, 'refs/tags/') && !endsWith('windows', inputs.target)
+        if: !endsWith('windows', inputs.target)
+        run: mv result/bin/${{ inputs.project }} ${{ inputs.project }}-${{ inputs.target }}
       - name: Upload release
         uses: softprops/action-gh-release@v2
         # if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: |
-            result/bin/${{ inputs.project }}*
-            result/share
-            share
+          files: ${{ inputs.project }}*
+      - name: Upload share
+        uses: softprops/action-gh-release@v2
+        # if: inputs.share && startsWith(github.ref, 'refs/tags/')
+        if: inputs.share
+        with:
+          files: result/share
