@@ -54,7 +54,7 @@ jobs:
           path: result/share          
       - name: Rename windows release
         # if: startsWith(github.ref, 'refs/tags/') && endsWith('windows', inputs.target)
-        if: endsWith('windows', inputs.target)
+        if: ${{ endsWith('windows', inputs.target) }}
         run: cp result/bin/${{ inputs.project }}.exe ${{ inputs.project }}-${{ inputs.target }}.exe
       - name: Rename non-windows release
         # if: startsWith(github.ref, 'refs/tags/') && !endsWith('windows', inputs.target)
