@@ -60,11 +60,12 @@ jobs:
         if: ${{ !inputs.share }}
         with:
           name: share
-          path: .
+          path: ./share
       - name: Copy binary
         run: cp result/bin/${{ inputs.project }}* .          
       - name: Compress release
         run: |
+          ls -al
           tar cvzf ${{ inputs.project }}.${{ inputs.target }}.tgz ${{ inputs.project }}* share
           zip -r ${{ inputs.project }}.${{ inputs.target }}.zip ${{ inputs.project }}* share
       - name: Upload release
