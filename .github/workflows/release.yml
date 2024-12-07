@@ -58,7 +58,7 @@ jobs:
         run: mv result/bin/${{ inputs.project }}.exe ${{ inputs.project }}-${{ inputs.target }}.exe
       - name: Move release
         # if: startsWith(github.ref, 'refs/tags/') && !endsWith('windows', inputs.target)
-        if: !endsWith('windows', inputs.target)
+        if: ${{ !endsWith('windows', inputs.target) }}
         run: mv result/bin/${{ inputs.project }} ${{ inputs.project }}-${{ inputs.target }}
       - name: Upload release
         uses: softprops/action-gh-release@v2
