@@ -7,6 +7,7 @@ on:
 jobs:
   release:
     uses: pimalaya/nix/.github/workflows/releases.yml@master
-    secrets: inherit
+    secrets:
+      CACHIX_AUTH_TOKEN: ${{ secrets.CACHIX_AUTH_TOKEN }}
     with:
       project: himalaya
